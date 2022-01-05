@@ -1,4 +1,3 @@
-// disable standard library
 #![no_std]
 #![no_main]
 
