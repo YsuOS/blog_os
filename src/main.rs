@@ -1,5 +1,4 @@
 #![no_std]
-// disable all Rust-level entry points
 #![no_main]
 
 use core::panic::PanicInfo;
