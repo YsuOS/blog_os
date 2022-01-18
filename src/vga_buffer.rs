@@ -1,3 +1,8 @@
+use volatile::Volatile;
+use core::fmt;
+use lazy_static::lazy_static;
+use spin::Mutex;
+
 #[allow(dead_code)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(u8)]
@@ -39,8 +44,6 @@ struct ScreenChar {
 
 const BUFFER_HEIGHT: usize = 25;
 const BUFFER_WIDTH: usize = 80;
-
-use volatile::Volatile;
 
 #[repr(transparent)]
 struct Buffer {
@@ -111,8 +114,6 @@ impl Writer {
 
 }
 
-use core::fmt;
-
 impl fmt::Write for Writer {
     fn write_str(&mut self, s: &str) -> fmt::Result {
         self.write_string(s);
@@ -133,9 +134,6 @@ pub fn print_something() {
     write!(writer, "The numbers are {} and {}", 42, 1.0/3.0).unwrap();
     //writer.write_string("Wörld!");
 }
-
-use lazy_static::lazy_static;
-use spin::Mutex;
 
 lazy_static! {
     // global interface that can be used as an interface from other modules without
