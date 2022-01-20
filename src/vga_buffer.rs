@@ -122,6 +122,16 @@ impl fmt::Write for Writer {
     }
 }
 
+lazy_static! {
+    // global interface that can be used as an interface from other modules without
+    // carrying a Writer instance around
+    pub static ref WRITER: Mutex<Writer> = Mutex::new(Writer {
+        column_position: 0,
+        color_code: ColorCode::new(Color::Yellow, Color::Black),
+        buffer: unsafe { &mut *(0xb8000 as *mut Buffer) },
+    });
+}
+
 pub fn print_something() {
     use core::fmt::Write;
     let mut writer = Writer {
@@ -133,16 +143,6 @@ pub fn print_something() {
     writer.write_byte(b'H');
     writer.write_string("ello ");
     write!(writer, "The numbers are {} and {}", 42, 1.0/3.0).unwrap();
-}
-
-lazy_static! {
-    // global interface that can be used as an interface from other modules without
-    // carrying a Writer instance around
-    pub static ref WRITER: Mutex<Writer> = Mutex::new(Writer {
-        column_position: 0,
-        color_code: ColorCode::new(Color::Yellow, Color::Black),
-        buffer: unsafe { &mut *(0xb8000 as *mut Buffer) },
-    });
 }
 
 #[macro_export]
