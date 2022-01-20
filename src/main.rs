@@ -1,6 +1,4 @@
-// disable standard library
 #![no_std]
-// disable all Rust-level entry points
 #![no_main]
 #![feature(custom_test_frameworks)]
 #![test_runner(blog_os::test_runner)]
