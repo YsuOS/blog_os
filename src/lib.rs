@@ -9,6 +9,7 @@ use core::panic::PanicInfo;
 
 pub mod serial;
 pub mod vga_buffer;
+pub mod interrupts;
 
 pub trait Testable {
     fn run(&self) -> ();
@@ -41,6 +42,10 @@ pub fn test_panic_handler(info: &PanicInfo) -> ! {
     loop {}
 }
 
+pub fn init() {
+    interrupts::init_idt();
+}
+
 /// Entry point for `cargo test`
 #[cfg(test)]
 #[no_mangle]
@@ -70,10 +75,4 @@ pub fn exit_qemu(exit_code: QemuExitCode) {
         let mut port = Port::new(0xf4);
         port.write(exit_code as u32);
     }
-}
-
-pub mod interrupts;
-
-pub fn init() {
-    interrupts::init_idt();
 }
