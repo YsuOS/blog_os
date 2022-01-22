@@ -5,6 +5,7 @@
 #![reexport_test_harness_main = "test_main"]
 
 use core::panic::PanicInfo;
+use blog_os::println;
 
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
@@ -17,8 +18,6 @@ pub extern "C" fn _start() -> ! {
 fn panic(info: &PanicInfo) -> ! {
     blog_os::test_panic_handler(info)
 }
-
-use blog_os::println;
 
 #[test_case]
 fn test_println() {
