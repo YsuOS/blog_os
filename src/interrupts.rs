@@ -1,7 +1,7 @@
 use x86_64::structures::idt::{InterruptDescriptorTable, InterruptStackFrame};
 use crate::{print, println, gdt};
 use lazy_static::lazy_static;
-use pic8259_simple::ChainedPics;
+use pic8259::ChainedPics;
 use spin;
 
 pub const PIC_1_OFFSET: u8 = 32;
@@ -27,8 +27,7 @@ pub fn init_idt() {
     IDT.load();
 }
 
-extern "x86-interrupt" fn keyboard_interrupt_handler(
-    _stack_frame: &mut InterruptStackFrame)
+extern "x86-interrupt" fn keyboard_interrupt_handler(_stack_frame: InterruptStackFrame)
 {
     use pc_keyboard::{layouts, DecodedKey, HandleControl, Keyboard, ScancodeSet1};
     use spin::Mutex;
@@ -60,8 +59,7 @@ extern "x86-interrupt" fn keyboard_interrupt_handler(
     }
 }
 
-extern "x86-interrupt" fn timer_interrupt_handler(
-    _stack_frame: &mut InterruptStackFrame)
+extern "x86-interrupt" fn timer_interrupt_handler(_stack_frame: InterruptStackFrame)
 {
     print!(".");
 
