@@ -109,9 +109,6 @@ impl Writer {
             self.buffer.chars[row][col].write(blank);
         }
     }
-
-
-
 }
 
 // To support `write!()` and `writeln!()` formatting macros
