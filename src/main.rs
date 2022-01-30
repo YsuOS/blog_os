@@ -1,6 +1,4 @@
-// disable standard library
 #![no_std]
-// disable all Rust-level entry points
 #![no_main]
 #![feature(custom_test_frameworks)]
 #![test_runner(blog_os::test_runner)]
@@ -32,23 +30,10 @@ pub extern "C" fn _start() -> ! {
 //        stack_overflow();
 //    }
 
-    //stack_overflow();
-
-//    // trigger a page fault
-//    unsafe {
-//        *(0xdeadbeaf as *mut u64) = 42;
-//    };
-//
-//    x86_64::instructions::interrupts::int3();
-
     #[cfg(test)]
     test_main();
 
     println!("It did not crash!");
-//    loop {
-//        use blog_os::print;
-//        print!("-");
-//    }
     blog_os::hlt_loop();
 }
 
