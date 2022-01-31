@@ -1,6 +1,4 @@
-// disable standard library
 #![no_std]
-// disable all Rust-level entry points
 #![no_main]
 #![feature(custom_test_frameworks)]
 #![test_runner(blog_os::test_runner)]
@@ -107,10 +105,6 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
     test_main();
 
     println!("It did not crash!");
-//    loop {
-//        use blog_os::print;
-//        print!("-");
-//    }
     blog_os::hlt_loop();
 }
 
