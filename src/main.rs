@@ -19,16 +19,11 @@ pub extern "C" fn _start() -> ! {
     println!("Level 4 page table at: {:?}", level_4_page_table.start_address());
 
     let ptr = 0x204a80 as *mut u32;
-    //let ptr = 0xdeadbeaf as *mut u32;
     unsafe { let x = *ptr; }
     println!("read worked");
 
     unsafe { *ptr = 42; }
     println!("write worked");
-
-//    fn stack_overflow() {
-//        stack_overflow();
-//    }
 
     #[cfg(test)]
     test_main();
