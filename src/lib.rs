@@ -13,6 +13,13 @@ pub mod memory;
 pub mod interrupts;
 pub mod gdt;
 
+pub fn init() {
+    gdt::init();
+    interrupts::init_idt();
+    unsafe { interrupts::PICS.lock().initialize() };
+    x86_64::instructions::interrupts::enable();
+}
+
 pub trait Testable {
     fn run(&self) -> ();
 }
@@ -55,13 +62,6 @@ use bootloader::{entry_point, BootInfo};
 
 #[cfg(test)]
 entry_point!(test_kernel_main);
-
-pub fn init() {
-    gdt::init();
-    interrupts::init_idt();
-    unsafe { interrupts::PICS.lock().initialize() };
-    x86_64::instructions::interrupts::enable();
-}
 
 /// Entry point for `cargo test`
 #[cfg(test)]
