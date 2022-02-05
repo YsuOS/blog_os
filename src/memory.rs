@@ -1,7 +1,8 @@
 use x86_64::{
     PhysAddr,
+    VirtAddr,
     structures::paging::{
-        Page, PageTable, VirtAddr, 
+        Page, PageTable,
         PhysFrame, Mapper, Size4KiB, 
         FrameAllocator, OffsetPageTable,
     }
