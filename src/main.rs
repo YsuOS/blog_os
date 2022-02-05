@@ -15,8 +15,7 @@ entry_point!(kernel_main);
 
 fn kernel_main(boot_info: &'static BootInfo) -> ! {
     use x86_64::{structures::paging::Page, VirtAddr};
-    use blog_os::allocator;
-    use blog_os::memory::{self, BootInfoFrameAllocator};
+    use blog_os::{allocator, memory::{self, BootInfoFrameAllocator}};
 
     println!("Hello World{}", "!");
     blog_os::init();
