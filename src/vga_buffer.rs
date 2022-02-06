@@ -1,3 +1,8 @@
+use volatile::Volatile;
+use core::fmt;
+use lazy_static::lazy_static;
+use spin::Mutex;
+
 #[allow(dead_code)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(u8)]
@@ -40,8 +45,6 @@ struct ScreenChar {
 const BUFFER_HEIGHT: usize = 25;
 const BUFFER_WIDTH: usize = 80;
 
-use volatile::Volatile;
-
 #[repr(transparent)]
 struct Buffer {
     chars: [[Volatile<ScreenChar>; BUFFER_WIDTH]; BUFFER_HEIGHT],
@@ -75,6 +78,17 @@ impl Writer {
         }
     }
 
+    pub fn write_string(&mut self, s: &str) {
+        for byte in s.bytes() {
+            match byte {
+                // printable ASCII byte or newline
+                0x20..=0x7e | b'\n' => self.write_byte(byte),
+                // not part of printable ASCII range
+                _ => self.write_byte(0xfe),
+            }
+        }
+    }
+
     fn new_line(&mut self) {
         for row in 1..BUFFER_HEIGHT {
             for col in 0..BUFFER_WIDTH {
@@ -95,45 +109,15 @@ impl Writer {
             self.buffer.chars[row][col].write(blank);
         }
     }
-
-    pub fn write_string(&mut self, s: &str) {
-        for byte in s.bytes() {
-            match byte {
-                // printable ASCII byte or newline
-                0x20..=0x7e | b'\n' => self.write_byte(byte),
-                // not part of printable ASCII range
-                _ => self.write_byte(0xfe),
-            }
-        }
-    }
-
 }
 
-use core::fmt;
-
+// To support `write!()` and `writeln!()` formatting macros
 impl fmt::Write for Writer {
     fn write_str(&mut self, s: &str) -> fmt::Result {
         self.write_string(s);
         Ok(())
     }
 }
-
-//pub fn print_something() {
-//    use core::fmt::Write;
-//    let mut writer = Writer {
-//        column_position: 0,
-//        color_code: ColorCode::new(Color::Yellow, Color::Black),
-//        buffer: unsafe { &mut *(0xb8000 as *mut Buffer) },
-//    };
-//
-//    writer.write_byte(b'H');
-//    writer.write_string("ello ");
-//    write!(writer, "The numbers are {} and {}", 42, 1.0/3.0).unwrap();
-//    //writer.write_string("Wörld!");
-//}
-
-use lazy_static::lazy_static;
-use spin::Mutex;
 
 lazy_static! {
     // global interface that can be used as an interface from other modules without

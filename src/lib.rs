@@ -12,6 +12,18 @@ use core::panic::PanicInfo;
 pub mod serial;
 pub mod vga_buffer;
 pub mod memory;
+pub mod interrupts;
+pub mod gdt;
+pub mod allocator;
+
+extern crate alloc;
+
+pub fn init() {
+    gdt::init();
+    interrupts::init_idt();
+    unsafe { interrupts::PICS.lock().initialize() };
+    x86_64::instructions::interrupts::enable();
+}
 
 pub trait Testable {
     fn run(&self) -> ();
@@ -35,6 +47,12 @@ pub fn test_runner(tests: &[&dyn Testable]) {
     }
 
     exit_qemu(QemuExitCode::Success);
+}
+
+pub fn hlt_loop() -> ! {
+    loop {
+        x86_64::instructions::hlt();
+    }
 }
 
 pub fn test_panic_handler(info: &PanicInfo) -> ! {
@@ -79,26 +97,6 @@ pub fn exit_qemu(exit_code: QemuExitCode) {
         port.write(exit_code as u32);
     }
 }
-
-pub mod interrupts;
-pub mod gdt;
-
-pub fn init() {
-    gdt::init();
-    interrupts::init_idt();
-    unsafe { interrupts::PICS.lock().initialize() };
-    x86_64::instructions::interrupts::enable();
-}
-
-pub fn hlt_loop() -> ! {
-    loop {
-        x86_64::instructions::hlt();
-    }
-}
-
-extern crate alloc;
-
-pub mod allocator;
 
 #[alloc_error_handler]
 fn alloc_error_handler(layout: alloc::alloc::Layout) -> ! {
