@@ -1,5 +1,6 @@
-use alloc::alloc::Layout;
-use core::ptr;
+use alloc::alloc::{GlobalAlloc, Layout};
+use super::Locked;
+use core::{mem, ptr::{self, NonNull}};
 
 struct ListNode {
     next: Option<&'static mut ListNode>,
@@ -45,7 +46,6 @@ impl FixedSizeBlockAllocator {
     }
 }
 
-
 /// Choose an appropriate block size for the given layout.
 ///
 /// Returns an index into the `BLOCK_SIZES` array.
@@ -53,10 +53,6 @@ fn list_index(layout: &Layout) -> Option<usize> {
     let required_block_size = layout.size().max(layout.align());
     BLOCK_SIZES.iter().position(|&s| s >= required_block_size)
 }
-
-use super::Locked;
-use alloc::alloc::GlobalAlloc;
-use core::{mem, ptr::NonNull};
 
 unsafe impl GlobalAlloc for Locked<FixedSizeBlockAllocator> {
     unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
@@ -105,4 +101,3 @@ unsafe impl GlobalAlloc for Locked<FixedSizeBlockAllocator> {
         }
     }
 }
-
