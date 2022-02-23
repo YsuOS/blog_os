@@ -3,11 +3,9 @@
 #![feature(abi_x86_interrupt)]
 
 use core::panic::PanicInfo;
-use blog_os::serial_print;
-use blog_os::{exit_qemu, QemuExitCode, serial_println};
-use x86_64::structures::idt::InterruptStackFrame;
+use blog_os::{exit_qemu, QemuExitCode, serial_print, serial_println};
+use x86_64::structures::idt::{InterruptStackFrame, InterruptDescriptorTable};
 use lazy_static::lazy_static;
-use x86_64::structures::idt::InterruptDescriptorTable;
 
 lazy_static! {
     static ref TEST_IDT: InterruptDescriptorTable = {
