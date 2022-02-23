@@ -4,6 +4,7 @@ use x86_64::{
     },
     VirtAddr,
 };
+use fixed_size_block::FixedSizeBlockAllocator;
 
 pub const HEAP_START: usize = 0x_4444_4444_0000;
 pub const HEAP_SIZE: usize = 100 * 1024; // 100KiB
@@ -56,7 +57,6 @@ impl<A> Locked<A> {
 }
 
 pub mod fixed_size_block;
-use fixed_size_block::FixedSizeBlockAllocator;
 
 #[global_allocator]
 static ALLOCATOR: Locked<FixedSizeBlockAllocator> = Locked::new(
